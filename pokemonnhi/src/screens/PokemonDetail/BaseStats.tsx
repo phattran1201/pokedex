@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 import React, {memo} from 'react';
-import {Text, View, ScrollView} from 'react-native';
+import {Text, View, ScrollView, LayoutAnimation} from 'react-native';
 import styles from '../../../assets/styles';
 import {ProgressBar, Colors} from 'react-native-paper';
 import {PokemonDetail} from '../../constants/type';
@@ -16,7 +16,13 @@ interface StatObj {
   url: string;
 }
 
-function Stats({item}: {item: PokemonDetail}) {
+function Stats({
+  item,
+  pokemonColor,
+}: {
+  item: PokemonDetail;
+  pokemonColor: string;
+}) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
       {item.stats.map((stat: Stat, idx: number) => {
@@ -29,7 +35,7 @@ function Stats({item}: {item: PokemonDetail}) {
             <View style={{width: 130, alignContent: 'center', paddingTop: 10}}>
               <ProgressBar
                 progress={stat.base_stat / 100}
-                color={Colors.grey800}
+                color={pokemonColor}
               />
             </View>
           </View>

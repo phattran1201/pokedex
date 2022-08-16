@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {memo} from 'react';
 import {Text, View, ScrollView} from 'react-native';
-import {POKEMON_COLORS} from '../../constants/pokemonColor';
+import {POKEMON_COLORS} from '../../constants/pokemonConstant';
 import {PokemonDetail} from '../../constants/type';
 
 function Moves({item}: {item: PokemonDetail}) {

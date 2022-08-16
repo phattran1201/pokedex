@@ -18,7 +18,8 @@ export default StyleSheet.create({
     borderTopRightRadius: 40,
     flex: 1,
     height: Dimensions.get('window').height,
-    paddingTop: 70,
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
   button: {
     borderRadius: 15,
@@ -69,7 +70,6 @@ export default StyleSheet.create({
   },
   detail__containerInfo: {
     flex: 1,
-    paddingHorizontal: 10,
   },
   detail__listTab: {
     flexDirection: 'row',
@@ -152,10 +152,10 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 15,
-    marginLeft: 30,
+    marginLeft: 10,
     color: 'grey',
     opacity: 0.7,
-    width: 120,
+    // width: 120,
   },
   stats__text: {
     textAlign: 'center',

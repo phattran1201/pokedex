@@ -76,6 +76,16 @@ interface PokemonDetail {
   abilities: Abilities[];
   stats: any;
 }
+
+interface Stat {
+  base_stat: number;
+  effort: number;
+  stat: StatObj;
+}
+interface StatObj {
+  name: string;
+  url: string;
+}
 export {
   Abilities,
   ItemPokemon,
@@ -85,4 +95,6 @@ export {
   PokemonsState,
   Types,
   Moves,
+  Stat,
+  StatObj,
 };

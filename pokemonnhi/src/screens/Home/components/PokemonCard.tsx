@@ -5,19 +5,17 @@ import {
   Text,
   Image,
   TouchableWithoutFeedback,
-  Dimensions,
   LayoutAnimation,
   View,
 } from 'react-native';
 import styles from '../../../../assets/styles';
 import {useNavigation} from '@react-navigation/native';
-// import {pokemonColors} from '../../store/action';
 import {ROUTE_NAME} from '../../../navigation/routeName';
 import {useGetPokemonDetailQuery} from '../../../store/Services';
-import {POKEMON_COLORS} from '../../../constants/pokemonColor';
+import {POKEMON_COLORS} from '../../../constants/pokemonConstant';
 import {ItemPokemon, PokemonDetail} from '../../../constants/type';
 import {SharedElement} from 'react-navigation-shared-element';
-import {useAppDispatch, useAppSelector} from '../../../hooks/reduxHook';
+import {useAppSelector} from '../../../hooks/reduxHook';
 import {RootState} from '../../../store';
 
 function PokemonCard({url, name}: ItemPokemon) {
@@ -42,8 +40,9 @@ function PokemonCard({url, name}: ItemPokemon) {
     navigate(ROUTE_NAME.POKEMON_DETAILS, {
       pokemonDetail,
       pokemonId: pokemonDetail?.id,
+      pokemonName: name,
     });
-  }, [navigate, pokemonDetail]);
+  }, [navigate, pokemonDetail, name]);
 
   LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
 

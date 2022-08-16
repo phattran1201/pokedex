@@ -12,13 +12,13 @@ const AppNavigation = () => {
     open: {
       animation: 'timing',
       config: {
-        duration: 1000,
+        duration: 300,
       },
     },
     close: {
       animation: 'timing',
       config: {
-        duration: 1000,
+        duration: 300,
       },
     },
   };
@@ -32,8 +32,8 @@ const AppNavigation = () => {
           options={{
             headerShown: false,
             gestureEnabled: false,
+            transitionSpec: DetailTransitionSpecs,
             cardStyle: {backgroundColor: 'transparent'},
-
             cardStyleInterpolator: ({current: {progress}}) => {
               return {
                 cardStyle: {
@@ -43,10 +43,14 @@ const AppNavigation = () => {
             },
           }}
           sharedElementsConfig={route => {
-            const {pokemonId} = route.params;
+            const {pokemonId, pokemonName} = route?.params;
             return [
               {
-                id: pokemonId,
+                id: pokemonId || '',
+                animation: 'move',
+              },
+              {
+                id: pokemonName || '',
                 animation: 'move',
               },
             ];
