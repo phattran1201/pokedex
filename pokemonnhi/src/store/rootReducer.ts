@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
-import {pokemonApi} from './Services';
 import pokemonReducer from './Reducer';
+import {pokemonApi} from './Services';
 
 export const rootReducer = combineReducers({
   pokemonReducer: pokemonReducer,

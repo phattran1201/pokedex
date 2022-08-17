@@ -8,26 +8,68 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {POKEMON_COLORS, STATS} from '../../constants/pokemonConstant';
 import styles from '../../../assets/styles';
 
-import {useAppSelector} from '../../hooks/reduxHook';
-import {RootState} from '../../store';
 import {SharedElement} from 'react-navigation-shared-element';
 import ICON from '../../../assets/icons';
-import Animated, {FadeInDown, FadeOutDown} from 'react-native-reanimated';
+import Animated, {
+  FadeInDown,
+  FadeOutDown,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import {Stat} from '../../constants/type';
-import {ProgressBar} from 'react-native-paper';
 
-const Detail = ({navigation, route}) => {
+const Detail = ({navigation, route}: any) => {
   const insets = useSafeAreaInsets();
+  const screenWidth = Dimensions.get('window').width;
+
+  const POKEMON_WIDTH = 200;
 
   const {pokemonId, pokemonDetail, pokemonName} = route?.params;
 
-  const [menu, setMenu] = useState('Base Stats');
+  const pokemonWidth = useSharedValue(POKEMON_WIDTH);
+  const pokemonImgOpacity = useSharedValue(1);
+  const offsetX = useSharedValue((screenWidth - POKEMON_WIDTH) / 2);
+  const offsetY = useSharedValue(-160);
+  const fontSizeHeader = useSharedValue(50);
+  const imgHeaderOpacity = useSharedValue(0);
+  const animatedHeight = useSharedValue(200);
+
+  const heightStyle = useAnimatedStyle(() => {
+    return {
+      height: animatedHeight.value,
+    };
+  });
+
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      fontSize: fontSizeHeader.value,
+    };
+  });
+
+  const headerImgStyle = useAnimatedStyle(() => {
+    return {
+      opacity: imgHeaderOpacity.value,
+    };
+  });
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      width: pokemonWidth.value,
+      height: pokemonWidth.value,
+      top: offsetY.value,
+      right: offsetX.value,
+      opacity: pokemonImgOpacity.value,
+    };
+  });
 
   const pokemonColor = POKEMON_COLORS[pokemonDetail.type];
   const bgStyles = {
@@ -35,25 +77,7 @@ const Detail = ({navigation, route}) => {
     backgroundColor: pokemonColor,
     paddingTop: insets.top,
   };
-  const btnActive = {
-    color: pokemonColor,
-  };
 
-  const listMenuInfo = [
-    {
-      option: 'About',
-    },
-    {
-      option: 'Base Stats',
-    },
-    {
-      option: 'Moves',
-    },
-  ];
-
-  const setMenuOption = (p: string) => {
-    return setMenu(p);
-  };
   const formatStat = (stat: Stat) => {
     for (let item in STATS) {
       if (item === stat.stat.name) {
@@ -66,6 +90,21 @@ const Detail = ({navigation, route}) => {
     }
   };
 
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: event => {
+      const {contentOffset} = event;
+      pokemonWidth.value = withTiming(POKEMON_WIDTH - contentOffset.y);
+      offsetY.value = withTiming(-160 - contentOffset.y);
+      offsetX.value = withTiming(
+        (screenWidth - POKEMON_WIDTH) / 2 - contentOffset.y * 2,
+      );
+      imgHeaderOpacity.value = withTiming(contentOffset.y / 94);
+      fontSizeHeader.value = withTiming(contentOffset.y >= 40 ? 35 : 50);
+    },
+
+    onEndDrag: e => {},
+  });
+
   const typeBgColor = (type: string) => {
     for (let key in POKEMON_COLORS) {
       if (type === key) {
@@ -76,13 +115,18 @@ const Detail = ({navigation, route}) => {
 
   return pokemonDetail ? (
     <SharedElement id={pokemonName} style={bgStyles}>
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+      <Animated.View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          paddingHorizontal: 20,
+          justifyContent: 'space-between',
+        }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            paddingHorizontal: 20,
           }}>
           <Image
             source={ICON.back}
@@ -94,17 +138,29 @@ const Detail = ({navigation, route}) => {
               marginBottom: 5,
             }}
           />
-
-          <Text style={[styles.text__titleDetail, {marginTop: 0}]}>
+          <Animated.Text
+            style={[headerStyle, styles.text__titleDetail, {marginTop: 0}]}>
             {pokemonDetail?.name}
-          </Text>
+          </Animated.Text>
         </TouchableOpacity>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <Animated.Image
+          style={[headerImgStyle, {width: 60, height: 60}]}
+          source={{uri: pokemonDetail?.imgUrl}}
+        />
+      </Animated.View>
+      <Animated.ScrollView
+        scrollEventThrottle={1}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        onScroll={scrollHandler}>
+        <Animated.View
+          style={[
+            heightStyle,
+            {
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            },
+          ]}>
           <View
             style={{
               flexDirection: 'row',
@@ -154,16 +210,17 @@ const Detail = ({navigation, route}) => {
               #{`${pokemonDetail?.id}`.padStart(3, '')}
             </Text>
           </View>
-        </View>
+        </Animated.View>
+
         <SharedElement
           id={pokemonId}
           style={{
-            alignItems: 'center',
-            elevation: 5,
+            // alignItems: 'center',
+            // elevation: 5,
             zIndex: 5,
           }}>
-          <Image
-            style={styles.detail__imagePokemon}
+          <Animated.Image
+            style={[styles.detail__imagePokemon, animatedStyles]}
             source={{uri: pokemonDetail?.imgUrl}}
           />
         </SharedElement>
@@ -179,50 +236,6 @@ const Detail = ({navigation, route}) => {
             },
           ]}>
           <SafeAreaView style={styles.detail__containerInfo}>
-            {/* <View style={styles.detail__listTab}>
-              {listMenuInfo.map(e => {
-                return (
-                  <TouchableOpacity
-                    key={e.option}
-                    style={[
-                      menu === e.option && {
-                        borderBottomWidth: 1,
-                        borderBottomColor: pokemonColor,
-                      },
-                      styles.detail__btnTab,
-                    ]}
-                    onPress={() => setMenuOption(e.option)}>
-                    <Text
-                      style={[
-                        menu === e.option && btnActive,
-                        styles.detail__textTab,
-                      ]}>
-                      {e.option}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-            <View>
-              <View style={{paddingBottom: 80}}>
-                {menu === 'Moves' && <Moves item={pokemonDetail} />}
-
-                {menu === 'About' && <About item={pokemonDetail} />}
-
-                {menu === 'Base Stats' && (
-                  <Stats item={pokemonDetail} pokemonColor={pokemonColor} />
-                )}
-              </View>
-            </View> */}
-            <Text
-              style={{
-                fontSize: 26,
-                fontWeight: 'bold',
-                textAlign: 'center',
-                marginVertical: 15,
-              }}>
-              {pokemonName}
-            </Text>
             <View
               style={{
                 flexDirection: 'row',
@@ -302,7 +315,7 @@ const Detail = ({navigation, route}) => {
                         width: '80%',
                         alignContent: 'center',
                         backgroundColor: '#E6E6E6',
-                        height: 20,
+                        height: 25,
                         borderRadius: 20,
                       }}>
                       <View
@@ -319,8 +332,18 @@ const Detail = ({navigation, route}) => {
                         <Text
                           style={{
                             textAlign: 'right',
+                            right:
+                              (stat.base_stat / formatStat(stat)?.maxStat) *
+                                100 <
+                              20
+                                ? -(
+                                    stat.base_stat / formatStat(stat)?.maxStat
+                                  ) * 400
+                                : 0,
+
+                            minWidth: 50,
                             paddingEnd: 5,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: '500',
                           }}>
                           {stat.base_stat} / {formatStat(stat)?.maxStat}
@@ -333,7 +356,7 @@ const Detail = ({navigation, route}) => {
             </ScrollView>
           </SafeAreaView>
         </Animated.View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SharedElement>
   ) : null;
 };

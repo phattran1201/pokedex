@@ -12,12 +12,10 @@ export default StyleSheet.create({
   },
 
   container__moves: {
-    top: 160,
     backgroundColor: '#fff',
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
-    flex: 1,
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height - 120,
     paddingTop: 40,
     paddingHorizontal: 20,
   },
@@ -44,7 +42,6 @@ export default StyleSheet.create({
     color: 'gray',
   },
   text__titleDetail: {
-    fontSize: 50,
     margin: 20,
     marginBottom: 10,
     fontWeight: 'bold',
@@ -63,10 +60,7 @@ export default StyleSheet.create({
     right: 2,
   },
   detail__imagePokemon: {
-    height: 200,
-    width: 200,
     position: 'absolute',
-    top: 20,
   },
   detail__containerInfo: {
     flex: 1,

@@ -1,4 +1,4 @@
-export const POKEMON_COLORS = {
+export const POKEMON_COLORS: any = {
   normal: '#A8A878',
   fighting: '#C03028',
   flying: '#A890F0',
@@ -19,7 +19,7 @@ export const POKEMON_COLORS = {
   fairy: '#EE99AC',
 };
 
-export const STATS = {
+export const STATS: any = {
   hp: {key: 'hp', max: 255, color: '#DF2A37'},
   attack: {key: 'atk', max: 190, color: '#EDB01D'},
   defense: {key: 'def', max: 230, color: '#3CA4D3'},
