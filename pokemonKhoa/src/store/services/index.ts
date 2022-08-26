@@ -1,7 +1,7 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import {base_Url} from '../../constants/baseUrl';
-import {ListPokemonRaw, Pokemon} from '../../constants/type';
+import {ListPokemonRaw, Pokemon} from '../../constants/types';
 
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',

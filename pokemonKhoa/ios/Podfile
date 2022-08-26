@@ -12,6 +12,12 @@ target 'pokemonKhoa' do
     :hermes_enabled => false
   )
 
+  pod 'RNSharedElement', :path => '../node_modules/react-native-shared-element'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'pokemonKhoaTests' do
     inherit! :complete
     # Pods for testing
